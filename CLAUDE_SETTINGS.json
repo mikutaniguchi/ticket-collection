@@ -1,4 +1,8 @@
 {
+  "costManagement": {
+    "usePaidServices": false,
+    "firebasePlan": "spark"
+  },
   "git": {
     "commitSignature": false,
     "commitMessageFormat": "simple",
