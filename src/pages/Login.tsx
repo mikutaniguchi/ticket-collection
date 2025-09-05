@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FirebaseError } from 'firebase/app';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Login() {
@@ -16,10 +17,14 @@ export default function Login() {
       await loginWithGoogle();
       navigate('/');
     } catch (error) {
-      if ((error as any).code === 'auth/popup-closed-by-user') {
-        setError('ログインがキャンセルされました');
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/popup-closed-by-user') {
+          setError('ログインがキャンセルされました');
+        } else {
+          setError('Googleログインに失敗しました');
+        }
       } else {
-        setError('Googleログインに失敗しました');
+        setError('予期しないエラーが発生しました');
       }
     } finally {
       setLoading(false);
