@@ -1,0 +1,14 @@
+{
+  "git": {
+    "commitSignature": false,
+    "commitMessageFormat": "simple"
+  },
+  "commands": {
+    "lint": "pnpm run lint",
+    "typeCheck": "pnpm run type-check",
+    "format": "pnpm run format",
+    "dev": "pnpm run dev",
+    "build": "pnpm run build"
+  },
+  "packageManager": "pnpm"
+}
