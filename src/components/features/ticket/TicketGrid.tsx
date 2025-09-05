@@ -23,7 +23,7 @@ export default function TicketGrid({
     default: 4,
     1200: 3,
     768: 2,
-    500: 1,
+    500: 2,
   };
 
   return (

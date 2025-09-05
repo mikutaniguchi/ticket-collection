@@ -1,0 +1,286 @@
+.ticket-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--background-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-label.required::after {
+  content: '*';
+  color: #e53e3e;
+  margin-left: 0.25rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: var(--background-white);
+  color: var(--text-dark);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(40, 116, 117, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: var(--background-white);
+  color: var(--text-dark);
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(40, 116, 117, 0.1);
+}
+
+.form-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.error-message {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* 画像アップロード */
+.image-upload-area {
+  position: relative;
+}
+
+.image-input {
+  display: none;
+}
+
+.image-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 200px;
+  border: 2px dashed var(--border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  background: var(--background-light);
+}
+
+.image-upload-button:hover {
+  border-color: var(--primary-color);
+  background: rgba(40, 116, 117, 0.05);
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* 星評価 */
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.star-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.rating-value {
+  margin-left: 0.5rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+/* ギャラリー画像 */
+.gallery-upload {
+  margin-bottom: 1rem;
+}
+
+.gallery-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  border: 1px dashed var(--border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  background: var(--background-light);
+  color: var(--text-light);
+}
+
+.gallery-upload-button:hover:not(.disabled) {
+  border-color: var(--primary-color);
+  background: rgba(40, 116, 117, 0.05);
+}
+
+.gallery-upload-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gallery-previews {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.gallery-preview-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gallery-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-image-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s;
+}
+
+.remove-image-button:hover {
+  background: #c53030;
+}
+
+/* フォームアクション */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.cancel-button,
+.submit-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.cancel-button {
+  background: var(--background-light);
+  color: var(--text-light);
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: #ddd;
+}
+
+.submit-button {
+  background: var(--primary-color);
+  color: white;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.cancel-button:disabled,
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .ticket-form {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+  }
+  
+  .gallery-previews {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
