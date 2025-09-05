@@ -1,0 +1,20 @@
+.ticket-grid {
+  display: flex;
+  margin-left: -1rem;
+  width: auto;
+}
+
+.ticket-grid-column {
+  padding-left: 1rem;
+  background-clip: padding-box;
+}
+
+@media (max-width: 500px) {
+  .ticket-grid {
+    margin-left: -0.5rem;
+  }
+  
+  .ticket-grid-column {
+    padding-left: 0.5rem;
+  }
+}

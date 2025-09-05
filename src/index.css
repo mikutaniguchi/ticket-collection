@@ -1,7 +1,18 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Yu Gothic", "游ゴシック", YuGothic, "游ゴシック体", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+
+  /* テーマカラー */
+  --primary-color: #287475;
+  --primary-hover: #1e5758;
+  --primary-light: #5a8a8b;
+  --background-light: #f5f5f5;
+  --background-white: #ffffff;
+  --text-dark: #333333;
+  --text-light: #666666;
+  --text-muted: #999999;
+  --border-light: #e0e0e0;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);

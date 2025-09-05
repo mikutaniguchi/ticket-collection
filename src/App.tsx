@@ -7,7 +7,8 @@ import {
 import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import Login from './pages/Login';
-import Home from './pages/Home';
+import Tickets from './pages/Tickets';
+import TicketDetail from './pages/TicketDetail';
 
 function AppRoutes() {
   const { user, loading } = useAuth();
@@ -29,8 +30,22 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-      <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+      <Route
+        path="/login"
+        element={user ? <Navigate to="/tickets" /> : <Login />}
+      />
+      <Route
+        path="/tickets"
+        element={user ? <Tickets /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/tickets/:id"
+        element={user ? <TicketDetail /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/"
+        element={<Navigate to={user ? '/tickets' : '/login'} />}
+      />
     </Routes>
   );
 }

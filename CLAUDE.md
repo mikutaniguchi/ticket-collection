@@ -20,6 +20,10 @@
 - 型チェック: `pnpm run type-check`
 - フォーマット: `pnpm run format`
 
+### UI実装ルール
+- 絵文字は使用しない（アクセシビリティとデザイン統一のため）
+- アイコンは lucide-react を使用する
+
 ### 開発コマンド
 - 開発サーバー起動: `pnpm run dev`
 - ビルド: `pnpm run build`
