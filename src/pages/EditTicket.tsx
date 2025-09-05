@@ -1,23 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockTickets } from '../data/mockTickets';
+import type { Ticket, TicketFormData } from '../types/ticket';
 import Header from '../components/layout/Header';
 import TicketForm from '../components/features/ticket/TicketForm';
-import type { TicketFormData } from '../components/features/ticket/TicketForm';
-
-interface Ticket {
-  id: string;
-  exhibitionName: string;
-  museumName: string;
-  exhibitionUrl?: string;
-  visitDate: Date;
-  rating: number;
-  review: string;
-  ticketImage: string;
-  gallery: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 export default function EditTicket() {
   const { id } = useParams<{ id: string }>();

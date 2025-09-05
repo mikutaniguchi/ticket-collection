@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
+import type { TicketFormData } from '../types/ticket';
 import Header from '../components/layout/Header';
 import TicketForm from '../components/features/ticket/TicketForm';
-import type { TicketFormData } from '../components/features/ticket/TicketForm';
 
 export default function CreateTicket() {
   const navigate = useNavigate();

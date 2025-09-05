@@ -1,16 +1,8 @@
 import { Calendar } from 'lucide-react';
-
-interface Ticket {
-  id: string;
-  ticketImage: string;
-  exhibitionName: string;
-  museumName?: string;
-  visitDate: string;
-  rating?: number;
-}
+import type { TicketCardData } from '../../../types/ticket';
 
 interface TicketCardProps {
-  ticket: Ticket;
+  ticket: TicketCardData;
   onClick: (ticketId: string) => void;
 }
 

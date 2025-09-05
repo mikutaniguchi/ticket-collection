@@ -1,17 +1,9 @@
 import Masonry from 'react-masonry-css';
 import TicketCard from './TicketCard';
-
-interface Ticket {
-  id: string;
-  ticketImage: string;
-  exhibitionName: string;
-  museumName?: string;
-  visitDate: string;
-  rating?: number;
-}
+import type { TicketCardData } from '../../../types/ticket';
 
 interface TicketGridProps {
-  tickets: Ticket[];
+  tickets: TicketCardData[];
   onTicketClick: (ticketId: string) => void;
 }
 

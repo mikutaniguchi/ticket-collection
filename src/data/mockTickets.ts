@@ -1,27 +1,6 @@
-export interface MockTicket {
-  id: string;
-  exhibitionName: string;
-  museumName: string;
-  exhibitionUrl?: string;
-  visitDate: Date;
-  rating: number;
-  review: string;
-  ticketImage: string;
-  gallery: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+import type { Ticket, TicketCardData } from '../types/ticket';
 
-export interface TicketCardData {
-  id: string;
-  ticketImage: string;
-  exhibitionName: string;
-  museumName: string;
-  visitDate: string;
-  rating: number;
-}
-
-export const mockTickets: MockTicket[] = [
+export const mockTickets: Ticket[] = [
   {
     id: '1',
     exhibitionName: 'ルノワール×セザンヌ展',
@@ -121,7 +100,7 @@ export const mockTickets: MockTicket[] = [
 ];
 
 // チケットカード用のデータ変換関数
-export const convertToCardData = (ticket: MockTicket): TicketCardData => ({
+export const convertToCardData = (ticket: Ticket): TicketCardData => ({
   id: ticket.id,
   ticketImage: ticket.ticketImage,
   exhibitionName: ticket.exhibitionName,

@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Star, Image, X } from 'lucide-react';
+import type { TicketFormData } from '../../../types/ticket';
 import '../../../styles/TicketForm.css';
-
-export interface TicketFormData {
-  ticketImage: File | string;
-  exhibitionName: string;
-  museumName: string;
-  exhibitionUrl?: string;
-  visitDate: Date;
-  rating: number;
-  review: string;
-  gallery: File[] | string[];
-}
 
 interface TicketFormProps {
   initialData?: Partial<TicketFormData>;
@@ -66,9 +56,6 @@ export default function TicketForm({
 
     if (!formData.exhibitionName.trim()) {
       newErrors.exhibitionName = '展示会名は必須です';
-    }
-    if (!formData.museumName.trim()) {
-      newErrors.museumName = '美術館名は必須です';
     }
     if (!formData.ticketImage) {
       newErrors.ticketImage = 'チケット画像は必須です';
@@ -184,7 +171,7 @@ export default function TicketForm({
       </div>
 
       <div className="form-group">
-        <label className="form-label required">美術館名</label>
+        <label className="form-label">美術館名</label>
         <input
           type="text"
           value={formData.museumName}
@@ -258,7 +245,7 @@ export default function TicketForm({
       </div>
 
       <div className="form-group">
-        <label className="form-label">追加画像（最大5枚）</label>
+        <label className="form-label">ギャラリー画像（最大5枚）</label>
         <div className="gallery-upload">
           <input
             type="file"

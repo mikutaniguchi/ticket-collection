@@ -3,21 +3,8 @@ import { useState, useEffect } from 'react';
 import { MapPin, ExternalLink, Pencil, ArrowLeft } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { mockTickets } from '../data/mockTickets';
+import type { Ticket } from '../types/ticket';
 import '../styles/TicketDetail.css';
-
-interface Ticket {
-  id: string;
-  exhibitionName: string;
-  museumName: string;
-  exhibitionUrl?: string;
-  visitDate: Date;
-  rating: number;
-  review: string;
-  ticketImage: string;
-  gallery: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 export default function TicketDetail() {
   const { id } = useParams<{ id: string }>();
