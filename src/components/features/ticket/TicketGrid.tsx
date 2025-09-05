@@ -24,8 +24,13 @@ export default function TicketGrid({
       className="ticket-grid"
       columnClassName="ticket-grid-column"
     >
-      {tickets.map((ticket) => (
-        <TicketCard key={ticket.id} ticket={ticket} onClick={onTicketClick} />
+      {tickets.map((ticket, index) => (
+        <TicketCard
+          key={ticket.id}
+          ticket={ticket}
+          onClick={onTicketClick}
+          index={index}
+        />
       ))}
     </Masonry>
   );

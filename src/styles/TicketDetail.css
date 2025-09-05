@@ -3,6 +3,7 @@
   background: var(--background-light);
   color: var(--text-dark);
   padding: 0;
+  padding-top: 3rem;
 }
 
 .ticket-detail-loading,
@@ -37,6 +38,7 @@
   align-items: center;
   margin-bottom: 1.5rem;
 }
+
 
 .back-button,
 .edit-button {
@@ -179,8 +181,14 @@
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .gallery-item {

@@ -1,96 +1,79 @@
+import { useState, useEffect, useRef } from 'react';
 import { Calendar } from 'lucide-react';
 import type { TicketCardData } from '../../../types/ticket';
+import '../../../styles/TicketCard.css';
 
 interface TicketCardProps {
   ticket: TicketCardData;
   onClick: (ticketId: string) => void;
+  index: number;
 }
 
-export default function TicketCard({ ticket, onClick }: TicketCardProps) {
+export default function TicketCard({
+  ticket,
+  onClick,
+  index,
+}: TicketCardProps) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  // Intersection Observer for lazy loading
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            if (imgRef.current) {
+              imgRef.current.src = ticket.ticketImage;
+            }
+          }
+        });
+      },
+      { rootMargin: '50px' }
+    );
+
+    const currentCard = cardRef.current;
+    if (currentCard) {
+      observer.observe(currentCard);
+    }
+
+    return () => {
+      if (currentCard) {
+        observer.unobserve(currentCard);
+      }
+    };
+  }, [ticket.ticketImage]);
+
   return (
     <div
+      ref={cardRef}
+      className="ticket-card"
       onClick={() => onClick(ticket.id)}
-      style={{
-        cursor: 'pointer',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        backgroundColor: 'white',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        transition: 'all 0.3s ease',
-        marginBottom: '1rem',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-4px)';
-        e.currentTarget.style.boxShadow = '0 8px 12px rgba(0, 0, 0, 0.15)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-      }}
+      style={{ '--stagger-index': index } as React.CSSProperties}
     >
-      <div
-        style={{
-          position: 'relative',
-          overflow: 'hidden',
-          backgroundColor: '#f0f0f0',
-        }}
-      >
+      <div className="ticket-card-image-container">
+        {!imageLoaded && isVisible && <div className="ticket-card-skeleton" />}
         <img
-          src={ticket.ticketImage}
+          ref={imgRef}
           alt={ticket.exhibitionName}
-          style={{
-            width: '100%',
-            height: 'auto',
-            display: 'block',
-          }}
+          className={`ticket-card-image ${imageLoaded ? 'loaded' : ''}`}
+          onLoad={() => setImageLoaded(true)}
           onError={(e) => {
             const target = e.currentTarget;
             target.style.minHeight = '300px';
             target.style.objectFit = 'cover';
+            setImageLoaded(true);
           }}
         />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background:
-              'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
-            padding: '2rem 1rem 1rem',
-          }}
-        >
-          <h3
-            style={{
-              color: 'white',
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              marginBottom: '0.25rem',
-              lineHeight: '1.3',
-            }}
-          >
-            {ticket.exhibitionName}
-          </h3>
+        <div className="ticket-card-overlay">
+          <h3 className="ticket-card-title">{ticket.exhibitionName}</h3>
           {ticket.museumName && (
-            <p
-              style={{
-                color: 'rgba(255, 255, 255, 0.9)',
-                fontSize: '0.85rem',
-                marginBottom: '0.25rem',
-              }}
-            >
-              {ticket.museumName}
-            </p>
+            <p className="ticket-card-museum">{ticket.museumName}</p>
           )}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.25rem',
-              color: 'rgba(255, 255, 255, 0.8)',
-              fontSize: '0.8rem',
-            }}
-          >
+          <div className="ticket-card-date">
             <Calendar size={14} />
             <span>{ticket.visitDate}</span>
           </div>

@@ -45,17 +45,22 @@ export default function Header() {
   return (
     <header
       style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 100,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '1rem 2rem',
+        padding: '0.5rem 2rem',
         backgroundColor: '#287475',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       }}
     >
       <div
         style={{
-          fontSize: '1.5rem',
+          fontSize: '1.2rem',
           fontWeight: 'bold',
           color: 'white',
           cursor: 'pointer',
@@ -71,16 +76,15 @@ export default function Header() {
             display: 'flex',
             alignItems: 'center',
             cursor: 'pointer',
-            padding: '0.5rem',
-            borderRadius: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            transition: 'all 0.2s',
+            padding: '0.25rem',
+            borderRadius: '50%',
+            transition: 'opacity 0.2s',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+            e.currentTarget.style.opacity = '0.8';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            e.currentTarget.style.opacity = '1';
           }}
           onClick={toggleDropdown}
         >
@@ -89,13 +93,13 @@ export default function Header() {
               src={user.photoURL}
               alt="Profile"
               style={{
-                width: '32px',
-                height: '32px',
+                width: '28px',
+                height: '28px',
                 borderRadius: '50%',
               }}
             />
           ) : (
-            <User size={32} color="white" />
+            <User size={28} color="white" />
           )}
         </div>
 

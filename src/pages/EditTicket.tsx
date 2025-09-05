@@ -115,7 +115,7 @@ export default function EditTicket() {
       style={{ minHeight: '100vh', backgroundColor: 'var(--background-light)' }}
     >
       <Header />
-      <div style={{ padding: '2rem 1rem' }}>
+      <div style={{ padding: '2rem 1rem', paddingTop: '4rem' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h1
             style={{
