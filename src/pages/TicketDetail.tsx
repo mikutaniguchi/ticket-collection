@@ -4,7 +4,7 @@ import { MapPin, ExternalLink, Pencil, ArrowLeft } from 'lucide-react';
 import Header from '../components/layout/Header';
 import { mockTickets } from '../data/mockTickets';
 import type { Ticket } from '../types/ticket';
-import '../styles/TicketDetail.css';
+import './TicketDetail.css';
 
 export default function TicketDetail() {
   const { id } = useParams<{ id: string }>();

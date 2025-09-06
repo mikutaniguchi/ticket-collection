@@ -1,22 +1,32 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import type { TicketFormData } from '../types/ticket';
 import Header from '../components/layout/Header';
 import TicketForm from '../components/features/ticket/TicketForm';
+import { ticketService } from '../services/ticketService';
+import { useAuth } from '../hooks/useAuth';
 
 export default function CreateTicket() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (_data: TicketFormData) => {
+  const handleSubmit = async (data: TicketFormData) => {
+    if (!user) {
+      alert('ログインが必要です');
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
     try {
-      // TODO: Firebase Storageに画像をアップロード
-      // TODO: Firestoreにチケットデータを保存
-      // TODO: チケットを作成
-
-      // 成功時は一覧ページに戻る
-      navigate('/tickets');
+      const ticketId = await ticketService.createTicket(user.uid, data);
+      navigate(`/tickets/${ticketId}`);
     } catch (error) {
       console.error('チケット作成に失敗しました:', error);
-      // TODO: エラーメッセージを表示
+      alert('チケットの作成に失敗しました');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,7 +52,11 @@ export default function CreateTicket() {
           >
             新しいチケットを追加
           </h1>
-          <TicketForm onSubmit={handleSubmit} onCancel={handleCancel} />
+          <TicketForm
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            loading={loading}
+          />
         </div>
       </div>
     </div>

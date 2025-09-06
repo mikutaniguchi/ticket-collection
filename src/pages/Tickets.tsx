@@ -3,7 +3,6 @@ import Header from '../components/layout/Header';
 import TicketGrid from '../components/features/ticket/TicketGrid';
 import FloatingButton from '../components/ui/FloatingButton';
 import { mockTicketCards } from '../data/mockTickets';
-import '../styles/TicketGrid.css';
 
 export default function Tickets() {
   const navigate = useNavigate();

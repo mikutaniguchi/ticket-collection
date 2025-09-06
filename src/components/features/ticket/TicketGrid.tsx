@@ -1,6 +1,7 @@
 import Masonry from 'react-masonry-css';
 import TicketCard from './TicketCard';
 import type { TicketCardData } from '../../../types/ticket';
+import './TicketGrid.css';
 
 interface TicketGridProps {
   tickets: TicketCardData[];

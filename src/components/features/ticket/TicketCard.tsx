@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Calendar } from 'lucide-react';
 import type { TicketCardData } from '../../../types/ticket';
-import '../../../styles/TicketCard.css';
+import './TicketCard.css';
 
 interface TicketCardProps {
   ticket: TicketCardData;

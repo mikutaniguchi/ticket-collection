@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Star, Image, X } from 'lucide-react';
 import type { TicketFormData } from '../../../types/ticket';
-import '../../../styles/TicketForm.css';
+import './TicketForm.css';
 
 interface TicketFormProps {
   initialData?: Partial<TicketFormData>;
@@ -224,20 +224,21 @@ export default function TicketForm({
             className="image-input"
             id="ticket-image"
           />
-          <label htmlFor="ticket-image" className="image-upload-button">
-            {ticketImagePreview ? (
-              <img
-                src={ticketImagePreview}
-                alt="チケット画像"
-                className="image-preview"
-              />
-            ) : (
+
+          {ticketImagePreview ? (
+            <img
+              src={ticketImagePreview}
+              alt="チケット画像"
+              className="image-preview"
+            />
+          ) : (
+            <label htmlFor="ticket-image" className="image-upload-button">
               <div className="upload-placeholder">
                 <Image size={32} />
                 <span>画像を選択</span>
               </div>
-            )}
-          </label>
+            </label>
+          )}
         </div>
         {errors.ticketImage && (
           <span className="error-message">{errors.ticketImage}</span>
