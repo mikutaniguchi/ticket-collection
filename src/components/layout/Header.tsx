@@ -2,11 +2,13 @@ import { LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
+import AccountSettingsModal from '../features/account/AccountSettingsModal';
 
 export default function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
@@ -134,7 +136,7 @@ export default function Header() {
                 e.currentTarget.style.backgroundColor = 'transparent';
               }}
               onClick={() => {
-                // TODO: 設定画面へ遷移
+                setShowSettingsModal(true);
                 setShowDropdown(false);
               }}
             >
@@ -171,6 +173,11 @@ export default function Header() {
           </div>
         )}
       </div>
+
+      <AccountSettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+      />
     </header>
   );
 }
