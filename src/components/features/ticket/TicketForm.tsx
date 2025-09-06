@@ -67,7 +67,7 @@ export default function TicketForm({
 
   const handleInputChange = (
     field: keyof TicketFormData,
-    value: string | number | Date | string[]
+    value: string | number | Date | File | (File | string)[]
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {

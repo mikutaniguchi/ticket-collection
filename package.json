@@ -43,6 +43,7 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
+      "bash -c 'pnpm run type-check'",
       "eslint --max-warnings 0",
       "prettier --write"
     ]
