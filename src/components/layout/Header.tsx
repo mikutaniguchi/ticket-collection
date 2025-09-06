@@ -1,4 +1,4 @@
-import { User, LogOut, Settings } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
@@ -54,16 +54,17 @@ export default function Header() {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0.5rem 2rem',
-        backgroundColor: '#287475',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        background: 'none',
+        boxShadow: 'none',
       }}
     >
       <div
         style={{
           fontSize: '1.2rem',
           fontWeight: 'bold',
-          color: 'white',
+          color: 'var(--text-dark)',
           cursor: 'pointer',
+          mixBlendMode: 'difference',
         }}
         onClick={() => navigate('/tickets')}
       >
@@ -76,9 +77,11 @@ export default function Header() {
             display: 'flex',
             alignItems: 'center',
             cursor: 'pointer',
-            padding: '0.25rem',
-            borderRadius: '50%',
+            padding: '0.5rem',
             transition: 'opacity 0.2s',
+            color: 'var(--text-dark)',
+            fontSize: '0.9rem',
+            mixBlendMode: 'difference',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.opacity = '0.8';
@@ -88,19 +91,7 @@ export default function Header() {
           }}
           onClick={toggleDropdown}
         >
-          {user?.photoURL ? (
-            <img
-              src={user.photoURL}
-              alt="Profile"
-              style={{
-                width: '28px',
-                height: '28px',
-                borderRadius: '50%',
-              }}
-            />
-          ) : (
-            <User size={28} color="white" />
-          )}
+          {user?.displayName || user?.email?.split('@')[0] || 'ユーザー'}
         </div>
 
         {showDropdown && (

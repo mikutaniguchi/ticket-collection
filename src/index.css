@@ -43,6 +43,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 #root {

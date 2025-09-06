@@ -20,7 +20,7 @@ export const mockTickets: Ticket[] = [
   },
   {
     id: '2',
-    exhibitionName: '立体造型物展',
+    exhibitionName: 'ジブリ立体造型物展',
     museumName: '東京都現代美術館',
     exhibitionUrl: 'https://www.mot-art-museum.jp/',
     visitDate: new Date('2024-02-28'),
@@ -29,7 +29,7 @@ export const mockTickets: Ticket[] = [
       '現代の立体造型作品の多様性に驚きました。素材や技法の革新性、そして空間との関係性を考えさせられる展覧会でした。',
     ticketImage: '/images/tickets/sculpture-exhibition.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1569934240643-c9bb1a6bae0b?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=400&h=400&fit=crop',
     ],
     createdAt: new Date('2024-02-28'),
     updatedAt: new Date('2024-02-28'),
