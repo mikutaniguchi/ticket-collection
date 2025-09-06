@@ -58,7 +58,7 @@ export default function TicketCard({
         {!imageLoaded && isVisible && <div className="ticket-card-skeleton" />}
         <img
           ref={imgRef}
-          alt={ticket.exhibitionName}
+          alt={ticket.title}
           className={`ticket-card-image ${imageLoaded ? 'loaded' : ''}`}
           onLoad={() => setImageLoaded(true)}
           onError={(e) => {
@@ -69,9 +69,9 @@ export default function TicketCard({
           }}
         />
         <div className="ticket-card-overlay">
-          <h3 className="ticket-card-title">{ticket.exhibitionName}</h3>
-          {ticket.museumName && (
-            <p className="ticket-card-museum">{ticket.museumName}</p>
+          <h3 className="ticket-card-title">{ticket.title}</h3>
+          {ticket.location && (
+            <p className="ticket-card-museum">{ticket.location}</p>
           )}
           <div className="ticket-card-date">
             <Calendar size={14} />

@@ -1,26 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockTickets } from '../data/mockTickets';
+import { useAuth } from '../hooks/useAuth';
+import { ticketService } from '../services/ticketService';
 import type { Ticket, TicketFormData } from '../types/ticket';
-import Header from '../components/layout/Header';
 import TicketForm from '../components/features/ticket/TicketForm';
 
 export default function EditTicket() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const fetchTicket = async () => {
       if (!id) return;
 
       try {
-        const foundTicket = mockTickets.find((t) => t.id === id);
-        setTicket(foundTicket || null);
+        const foundTicket = await ticketService.getTicket(id);
+        setTicket(foundTicket);
       } catch (error) {
         console.error('チケットの取得に失敗しました:', error);
+        setError('チケットの取得に失敗しました');
       } finally {
         setLoading(false);
       }
@@ -29,20 +32,20 @@ export default function EditTicket() {
     fetchTicket();
   }, [id]);
 
-  const handleSubmit = async (_data: TicketFormData) => {
-    if (!ticket) return;
+  const handleSubmit = async (data: TicketFormData) => {
+    if (!ticket || !user || !id) return;
 
     setSaving(true);
+    setError('');
+
     try {
-      // TODO: Firebase Storageに新しい画像をアップロード（必要に応じて）
-      // TODO: Firestoreのチケットデータを更新
-      // TODO: チケットを更新
+      await ticketService.updateTicket(id, user.uid, data);
 
       // 成功時は詳細ページに戻る
-      navigate(`/tickets/${ticket.id}`);
+      navigate(`/tickets/${id}`);
     } catch (error) {
       console.error('チケット更新に失敗しました:', error);
-      // TODO: エラーメッセージを表示
+      setError('チケットの更新に失敗しました');
     } finally {
       setSaving(false);
     }
@@ -80,7 +83,7 @@ export default function EditTicket() {
           justifyContent: 'center',
         }}
       >
-        <p>チケットが見つかりません</p>
+        <p>{error || 'チケットが見つかりません'}</p>
         <button
           onClick={() => navigate('/tickets')}
           style={{
@@ -101,9 +104,9 @@ export default function EditTicket() {
 
   const initialData: Partial<TicketFormData> = {
     ticketImage: ticket.ticketImage,
-    exhibitionName: ticket.exhibitionName,
-    museumName: ticket.museumName,
-    exhibitionUrl: ticket.exhibitionUrl,
+    title: ticket.title,
+    location: ticket.location,
+    websiteUrl: ticket.websiteUrl,
     visitDate: ticket.visitDate,
     rating: ticket.rating,
     review: ticket.review,
@@ -114,8 +117,7 @@ export default function EditTicket() {
     <div
       style={{ minHeight: '100vh', backgroundColor: 'var(--background-light)' }}
     >
-      <Header />
-      <div style={{ padding: '2rem 1rem', paddingTop: '4rem' }}>
+      <div style={{ padding: '2rem 1rem' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h1
             style={{
@@ -126,8 +128,25 @@ export default function EditTicket() {
               textAlign: 'center',
             }}
           >
-            チケットを編集
+            チケットの編集
           </h1>
+
+          {error && (
+            <div
+              style={{
+                background: '#fee',
+                color: '#c53030',
+                padding: '1rem',
+                borderRadius: '8px',
+                marginBottom: '1.5rem',
+                textAlign: 'center',
+                border: '1px solid #fed7d7',
+              }}
+            >
+              {error}
+            </div>
+          )}
+
           <TicketForm
             initialData={initialData}
             onSubmit={handleSubmit}

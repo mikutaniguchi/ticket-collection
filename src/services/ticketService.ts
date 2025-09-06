@@ -7,11 +7,11 @@ import {
   getDocs,
   query,
   where,
-  orderBy,
   getDoc,
   Timestamp,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { processAndUploadFile } from './fileStorage';
 import type { Ticket, TicketFormData } from '../types/ticket';
 
 const COLLECTION_NAME = 'tickets';
@@ -19,16 +19,64 @@ const COLLECTION_NAME = 'tickets';
 export const ticketService = {
   async createTicket(userId: string, data: TicketFormData): Promise<string> {
     try {
+      // まずFirestoreにチケットデータを作成（画像URL無し）
       const ticketData = {
-        ...data,
-        userId,
+        title: data.title,
+        location: data.location || '',
+        websiteUrl: data.websiteUrl || '',
         visitDate: Timestamp.fromDate(data.visitDate),
+        rating: data.rating,
+        review: data.review || '',
+        ticketImage: '', // 後で更新
+        gallery: [], // 後で更新
+        userId,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
       };
 
       const docRef = await addDoc(collection(db, COLLECTION_NAME), ticketData);
-      return docRef.id;
+      const ticketId = docRef.id;
+
+      // チケット画像をアップロード
+      let ticketImageUrl = '';
+      if (data.ticketImage && data.ticketImage instanceof File) {
+        const uploadedTicketImage = await processAndUploadFile(
+          data.ticketImage,
+          userId,
+          ticketId,
+          'ticket'
+        );
+        ticketImageUrl = uploadedTicketImage.url;
+      } else if (typeof data.ticketImage === 'string') {
+        ticketImageUrl = data.ticketImage;
+      }
+
+      // ギャラリー画像をアップロード
+      const galleryUrls: string[] = [];
+      if (data.gallery && data.gallery.length > 0) {
+        for (const galleryItem of data.gallery) {
+          if (galleryItem instanceof File) {
+            const uploadedGalleryImage = await processAndUploadFile(
+              galleryItem,
+              userId,
+              ticketId,
+              'gallery'
+            );
+            galleryUrls.push(uploadedGalleryImage.url);
+          } else if (typeof galleryItem === 'string') {
+            galleryUrls.push(galleryItem);
+          }
+        }
+      }
+
+      // 画像URLでFirestoreを更新
+      await updateDoc(doc(db, COLLECTION_NAME, ticketId), {
+        ticketImage: ticketImageUrl,
+        gallery: galleryUrls,
+        updatedAt: Timestamp.now(),
+      });
+
+      return ticketId;
     } catch (error) {
       console.error('Error creating ticket:', error);
       throw new Error('チケットの作成に失敗しました');
@@ -37,15 +85,65 @@ export const ticketService = {
 
   async updateTicket(
     ticketId: string,
-    data: Partial<TicketFormData>
+    userId: string,
+    data: TicketFormData
   ): Promise<void> {
     try {
+      // 現在のチケットデータを取得
+      const currentTicket = await this.getTicket(ticketId);
+      if (!currentTicket) {
+        throw new Error('チケットが見つかりません');
+      }
+
+      let ticketImageUrl = currentTicket.ticketImage;
+      let galleryUrls = [...currentTicket.gallery];
+
+      // チケット画像の処理
+      if (data.ticketImage && data.ticketImage instanceof File) {
+        // 新しい画像がアップロードされた場合
+        const uploadedTicketImage = await processAndUploadFile(
+          data.ticketImage,
+          userId,
+          ticketId,
+          'ticket'
+        );
+        ticketImageUrl = uploadedTicketImage.url;
+
+        // 古い画像を削除（必要に応じて）
+        // TODO: 古い画像のfullPathを保存していれば削除可能
+      } else if (typeof data.ticketImage === 'string') {
+        ticketImageUrl = data.ticketImage;
+      }
+
+      // ギャラリー画像の処理
+      if (data.gallery && data.gallery.length >= 0) {
+        galleryUrls = [];
+        for (const galleryItem of data.gallery) {
+          if (galleryItem instanceof File) {
+            const uploadedGalleryImage = await processAndUploadFile(
+              galleryItem,
+              userId,
+              ticketId,
+              'gallery'
+            );
+            galleryUrls.push(uploadedGalleryImage.url);
+          } else if (typeof galleryItem === 'string') {
+            galleryUrls.push(galleryItem);
+          }
+        }
+      }
+
+      // Firestoreを更新
       const updateData = {
-        ...data,
+        title: data.title,
+        location: data.location,
+        websiteUrl: data.websiteUrl,
+        visitDate: Timestamp.fromDate(data.visitDate),
+        rating: data.rating,
+        review: data.review,
+        ticketImage: ticketImageUrl,
+        gallery: galleryUrls,
         updatedAt: Timestamp.now(),
-        ...(data.visitDate && {
-          visitDate: Timestamp.fromDate(data.visitDate),
-        }),
       };
 
       await updateDoc(doc(db, COLLECTION_NAME, ticketId), updateData);
@@ -88,10 +186,10 @@ export const ticketService = {
 
   async getUserTickets(userId: string): Promise<Ticket[]> {
     try {
+      // まずはシンプルなクエリで試す（orderByなし）
       const q = query(
         collection(db, COLLECTION_NAME),
-        where('userId', '==', userId),
-        orderBy('visitDate', 'desc')
+        where('userId', '==', userId)
       );
 
       const querySnapshot = await getDocs(q);
@@ -102,12 +200,14 @@ export const ticketService = {
         tickets.push({
           id: doc.id,
           ...data,
-          visitDate: data.visitDate.toDate(),
-          createdAt: data.createdAt.toDate(),
-          updatedAt: data.updatedAt.toDate(),
+          visitDate: data.visitDate?.toDate() || new Date(),
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
         } as Ticket);
       });
 
+      // 取得後にJavaScriptでソート
+      tickets.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
       return tickets;
     } catch (error) {
       console.error('Error getting user tickets:', error);

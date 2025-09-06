@@ -3,9 +3,9 @@
 // 基本のチケット型
 export interface Ticket {
   id: string;
-  exhibitionName: string;
-  museumName?: string;
-  exhibitionUrl?: string;
+  title: string;
+  location?: string;
+  websiteUrl?: string;
   visitDate: Date;
   rating: number;
   review: string;
@@ -19,8 +19,8 @@ export interface Ticket {
 export interface TicketCardData {
   id: string;
   ticketImage: string;
-  exhibitionName: string;
-  museumName?: string;
+  title: string;
+  location?: string;
   visitDate: string;
   rating: number;
 }
@@ -28,9 +28,9 @@ export interface TicketCardData {
 // フォーム入力用の型
 export interface TicketFormData {
   ticketImage: File | string;
-  exhibitionName: string;
-  museumName?: string;
-  exhibitionUrl?: string;
+  title: string;
+  location?: string;
+  websiteUrl?: string;
   visitDate: Date;
   rating: number;
   review: string;

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/miku/app/yukuyuku-app/src/lib/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

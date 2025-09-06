@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Calendar, Star, Image, X } from 'lucide-react';
+import { Calendar, Image, Star, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { TicketFormData } from '../../../types/ticket';
 import './TicketForm.css';
 
@@ -18,9 +18,9 @@ export default function TicketForm({
 }: TicketFormProps) {
   const [formData, setFormData] = useState<TicketFormData>({
     ticketImage: '',
-    exhibitionName: '',
-    museumName: '',
-    exhibitionUrl: '',
+    title: '',
+    location: '',
+    websiteUrl: '',
     visitDate: new Date(),
     rating: 3,
     review: '',
@@ -54,8 +54,8 @@ export default function TicketForm({
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.exhibitionName.trim()) {
-      newErrors.exhibitionName = '展示会名は必須です';
+    if (!formData.title.trim()) {
+      newErrors.title = '名称は必須です';
     }
     if (!formData.ticketImage) {
       newErrors.ticketImage = 'チケット画像は必須です';
@@ -113,7 +113,11 @@ export default function TicketForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm() && !loading) {
-      await onSubmit(formData);
+      try {
+        await onSubmit(formData);
+      } catch (error) {
+        console.error('送信エラー:', error);
+      }
     }
   };
 
@@ -157,30 +161,28 @@ export default function TicketForm({
       </div>
 
       <div className="form-group">
-        <label className="form-label required">展示会名</label>
+        <label className="form-label required">名称</label>
         <input
           type="text"
-          value={formData.exhibitionName}
-          onChange={(e) => handleInputChange('exhibitionName', e.target.value)}
+          value={formData.title}
+          onChange={(e) => handleInputChange('title', e.target.value)}
           className="form-input"
-          placeholder="例: モネとその時代"
+          placeholder="例: モネ展"
         />
-        {errors.exhibitionName && (
-          <span className="error-message">{errors.exhibitionName}</span>
-        )}
+        {errors.title && <span className="error-message">{errors.title}</span>}
       </div>
 
       <div className="form-group">
-        <label className="form-label">美術館名</label>
+        <label className="form-label">場所</label>
         <input
           type="text"
-          value={formData.museumName}
-          onChange={(e) => handleInputChange('museumName', e.target.value)}
+          value={formData.location}
+          onChange={(e) => handleInputChange('location', e.target.value)}
           className="form-input"
           placeholder="例: 国立西洋美術館"
         />
-        {errors.museumName && (
-          <span className="error-message">{errors.museumName}</span>
+        {errors.location && (
+          <span className="error-message">{errors.location}</span>
         )}
       </div>
 
@@ -188,8 +190,8 @@ export default function TicketForm({
         <label className="form-label">公式サイトURL</label>
         <input
           type="url"
-          value={formData.exhibitionUrl}
-          onChange={(e) => handleInputChange('exhibitionUrl', e.target.value)}
+          value={formData.websiteUrl}
+          onChange={(e) => handleInputChange('websiteUrl', e.target.value)}
           className="form-input"
           placeholder="https://example.com"
         />
@@ -206,7 +208,7 @@ export default function TicketForm({
           value={formData.review}
           onChange={(e) => handleInputChange('review', e.target.value)}
           className="form-textarea"
-          placeholder="展示の感想を書いてください..."
+          placeholder="感想を書いてください"
           rows={4}
         />
       </div>

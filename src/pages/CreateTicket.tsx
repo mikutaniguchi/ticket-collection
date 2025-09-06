@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import type { TicketFormData } from '../types/ticket';
-import Header from '../components/layout/Header';
 import TicketForm from '../components/features/ticket/TicketForm';
 import { ticketService } from '../services/ticketService';
 import { useAuth } from '../hooks/useAuth';
@@ -38,8 +37,7 @@ export default function CreateTicket() {
     <div
       style={{ minHeight: '100vh', backgroundColor: 'var(--background-light)' }}
     >
-      <Header />
-      <div style={{ padding: '2rem 1rem', paddingTop: '4rem' }}>
+      <div style={{ padding: '2rem 1rem' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
           <h1
             style={{
@@ -50,7 +48,7 @@ export default function CreateTicket() {
               textAlign: 'center',
             }}
           >
-            新しいチケットを追加
+            チケットの追加
           </h1>
           <TicketForm
             onSubmit={handleSubmit}
