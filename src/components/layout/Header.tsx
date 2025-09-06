@@ -45,17 +45,10 @@ export default function Header() {
   return (
     <header
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0.5rem 2rem',
-        background: 'none',
-        boxShadow: 'none',
       }}
     >
       <div
@@ -64,7 +57,6 @@ export default function Header() {
           fontWeight: 'bold',
           color: 'var(--text-dark)',
           cursor: 'pointer',
-          mixBlendMode: 'difference',
         }}
         onClick={() => navigate('/tickets')}
       >
@@ -81,7 +73,6 @@ export default function Header() {
             transition: 'opacity 0.2s',
             color: 'var(--text-dark)',
             fontSize: '0.9rem',
-            mixBlendMode: 'difference',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.opacity = '0.8';

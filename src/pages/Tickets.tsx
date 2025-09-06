@@ -22,7 +22,7 @@ export default function Tickets() {
       <div
         style={{
           padding: '2rem',
-          paddingTop: '5rem',
+          paddingTop: '1rem',
           maxWidth: '1400px',
           margin: '0 auto',
         }}
