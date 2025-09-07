@@ -24,6 +24,8 @@ export default function TicketDetail() {
   );
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [isSwipeAnimating, setIsSwipeAnimating] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,15 +136,64 @@ export default function TicketDetail() {
     }, 150);
   };
 
+  const nextImage = () => {
+    if (selectedImageIndex !== null && ticket && !isSwipeAnimating) {
+      setIsSwipeAnimating(true);
+      const totalImages = 1 + ticket.gallery.length;
+      setSelectedImageIndex((selectedImageIndex + 1) % totalImages);
+      setTimeout(() => {
+        setIsSwipeAnimating(false);
+        setSwipeOffset(0);
+      }, 300);
+    }
+  };
+
+  const prevImage = () => {
+    if (selectedImageIndex !== null && ticket && !isSwipeAnimating) {
+      setIsSwipeAnimating(true);
+      const totalImages = 1 + ticket.gallery.length;
+      setSelectedImageIndex(
+        (selectedImageIndex - 1 + totalImages) % totalImages
+      );
+      setTimeout(() => {
+        setIsSwipeAnimating(false);
+        setSwipeOffset(0);
+      }, 300);
+    }
+  };
+
   // スワイプ対応（モバイルのみ、かつモーダル表示中は無効）
   const swipeHandlers = useSwipe({
+    onSwipeStart: () => {
+      if (selectedImageIndex !== null) {
+        setSwipeOffset(0);
+      }
+    },
+    onSwipeMove: (deltaX: number) => {
+      if (selectedImageIndex !== null && !isSwipeAnimating) {
+        setSwipeOffset(deltaX);
+      }
+    },
+    onSwipeEnd: () => {
+      if (selectedImageIndex !== null && !isSwipeAnimating) {
+        setIsSwipeAnimating(true);
+        setTimeout(() => {
+          setSwipeOffset(0);
+          setIsSwipeAnimating(false);
+        }, 200);
+      }
+    },
     onSwipeLeft:
-      isMobile() && selectedImageIndex === null && !showDeleteConfirm
-        ? goToNext
+      isMobile() && !showDeleteConfirm
+        ? selectedImageIndex !== null
+          ? nextImage
+          : goToNext
         : undefined,
     onSwipeRight:
-      isMobile() && selectedImageIndex === null && !showDeleteConfirm
-        ? goToPrevious
+      isMobile() && !showDeleteConfirm
+        ? selectedImageIndex !== null
+          ? prevImage
+          : goToPrevious
         : undefined,
   });
 
@@ -165,22 +216,6 @@ export default function TicketDetail() {
     } catch (error) {
       console.error('削除に失敗しました:', error);
       alert('チケットの削除に失敗しました');
-    }
-  };
-
-  const nextImage = () => {
-    if (selectedImageIndex !== null && ticket) {
-      const totalImages = 1 + ticket.gallery.length;
-      setSelectedImageIndex((selectedImageIndex + 1) % totalImages);
-    }
-  };
-
-  const prevImage = () => {
-    if (selectedImageIndex !== null && ticket) {
-      const totalImages = 1 + ticket.gallery.length;
-      setSelectedImageIndex(
-        (selectedImageIndex - 1 + totalImages) % totalImages
-      );
     }
   };
 
@@ -317,18 +352,46 @@ export default function TicketDetail() {
 
       {selectedImageIndex !== null && (
         <div className="image-modal" onClick={closeImageModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            {...swipeHandlers}
+          >
             <button className="modal-close" onClick={closeImageModal}>
               ×
             </button>
             <button className="modal-prev" onClick={prevImage}>
               ‹
             </button>
-            <img
-              src={allImages[selectedImageIndex]}
-              alt={`画像 ${selectedImageIndex + 1}`}
-              className="modal-image"
-            />
+            <div className="modal-image-container">
+              <img
+                src={allImages[selectedImageIndex]}
+                alt={`画像 ${selectedImageIndex + 1}`}
+                className="modal-image"
+                style={{
+                  transform: `translateX(${swipeOffset}px)`,
+                  transition: isSwipeAnimating
+                    ? 'transform 0.3s ease-out'
+                    : 'none',
+                }}
+              />
+              <div
+                className="modal-touch-area modal-touch-left"
+                onClick={prevImage}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  prevImage();
+                }}
+              ></div>
+              <div
+                className="modal-touch-area modal-touch-right"
+                onClick={nextImage}
+                onTouchEnd={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+              ></div>
+            </div>
             <button className="modal-next" onClick={nextImage}>
               ›
             </button>

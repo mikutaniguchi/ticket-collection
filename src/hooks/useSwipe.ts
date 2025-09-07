@@ -3,6 +3,9 @@ import { useRef, useEffect } from 'react';
 interface SwipeHandlers {
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
+  onSwipeMove?: (deltaX: number) => void;
+  onSwipeStart?: () => void;
+  onSwipeEnd?: () => void;
 }
 
 interface TouchState {
@@ -28,6 +31,7 @@ export const useSwipe = (handlers: SwipeHandlers, threshold: number = 50) => {
       deltaX: 0,
       deltaY: 0,
     };
+    handlers.onSwipeStart?.();
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -36,16 +40,31 @@ export const useSwipe = (handlers: SwipeHandlers, threshold: number = 50) => {
     const touch = e.touches[0];
     touchState.current.deltaX = touch.clientX - touchState.current.startX;
     touchState.current.deltaY = touch.clientY - touchState.current.startY;
+
+    // 水平方向のスワイプのみ追跡
+    if (
+      Math.abs(touchState.current.deltaX) > Math.abs(touchState.current.deltaY)
+    ) {
+      handlers.onSwipeMove?.(touchState.current.deltaX);
+    }
   };
 
   const handleTouchEnd = () => {
     const { deltaX, deltaY } = touchState.current;
 
+    handlers.onSwipeEnd?.();
+
     // 縦方向のスワイプが水平方向より大きい場合は無視（スクロール）
-    if (Math.abs(deltaY) > Math.abs(deltaX)) return;
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      touchState.current = { startX: 0, startY: 0, deltaX: 0, deltaY: 0 };
+      return;
+    }
 
     // スワイプの閾値チェック
-    if (Math.abs(deltaX) < threshold) return;
+    if (Math.abs(deltaX) < threshold) {
+      touchState.current = { startX: 0, startY: 0, deltaX: 0, deltaY: 0 };
+      return;
+    }
 
     if (deltaX > 0) {
       // 右にスワイプ（前へ）
