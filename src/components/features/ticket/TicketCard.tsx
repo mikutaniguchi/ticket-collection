@@ -25,9 +25,27 @@ export default function TicketCard({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setIsVisible(true);
-            if (imgRef.current) {
-              imgRef.current.src = ticket.ticketImage;
+            // 画像をプリロード
+            const img = new Image();
+            img.onload = () => {
+              setImageLoaded(true);
+              setIsVisible(true);
+              if (imgRef.current) {
+                imgRef.current.src = ticket.ticketImage;
+              }
+            };
+            img.onerror = () => {
+              setImageLoaded(true);
+              setIsVisible(true);
+              if (imgRef.current) {
+                imgRef.current.src = ticket.ticketImage;
+              }
+            };
+            img.src = ticket.ticketImage;
+
+            // observerを解除
+            if (cardRef.current) {
+              observer.unobserve(cardRef.current);
             }
           }
         });
@@ -50,7 +68,7 @@ export default function TicketCard({
   return (
     <div
       ref={cardRef}
-      className="ticket-card"
+      className={`ticket-card ${imageLoaded && isVisible ? 'show' : ''}`}
       onClick={() => onClick(ticket.id)}
       style={{ '--stagger-index': index } as React.CSSProperties}
     >
@@ -60,12 +78,10 @@ export default function TicketCard({
           ref={imgRef}
           alt={ticket.title}
           className={`ticket-card-image ${imageLoaded ? 'loaded' : ''}`}
-          onLoad={() => setImageLoaded(true)}
           onError={(e) => {
             const target = e.currentTarget;
             target.style.minHeight = '300px';
             target.style.objectFit = 'cover';
-            setImageLoaded(true);
           }}
         />
         <div className="ticket-card-overlay">

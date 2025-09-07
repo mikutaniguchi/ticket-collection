@@ -10,11 +10,11 @@
   margin-bottom: 1rem;
   opacity: 0;
   transform: translateY(20px);
-  animation: fadeInUp 0.4s ease forwards;
 }
 
-/* スタガーアニメーション用のカスタムプロパティ */
-.ticket-card {
+/* 画像が読み込まれたらアニメーション開始 */
+.ticket-card.show {
+  animation: fadeInUp 0.4s ease forwards;
   animation-delay: calc(var(--stagger-index, 0) * 80ms);
 }
 
@@ -115,7 +115,7 @@
 
 /* モバイル対応 */
 @media (width <= 768px) {
-  .ticket-card {
-    animation-delay: calc(var(--stagger-index, 0) * 50ms);
+  .ticket-card.show {
+    animation-delay: calc(var(--stagger-index, 0) * 80ms);
   }
 }

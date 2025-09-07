@@ -17,11 +17,16 @@ export default function Login() {
       await loginWithGoogle();
       navigate('/');
     } catch (error) {
+      console.error('Login error details:', error);
       if (error instanceof FirebaseError) {
+        console.error('Firebase error code:', error.code);
+        console.error('Firebase error message:', error.message);
         if (error.code === 'auth/popup-closed-by-user') {
           setError('ログインがキャンセルされました');
+        } else if (error.code === 'auth/unauthorized-domain') {
+          setError('このドメインは認証が許可されていません');
         } else {
-          setError('Googleログインに失敗しました');
+          setError(`Googleログインに失敗しました (${error.code})`);
         }
       } else {
         setError('予期しないエラーが発生しました');

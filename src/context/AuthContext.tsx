@@ -4,8 +4,7 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
@@ -29,20 +28,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // リダイレクト結果の処理（モバイル対応）
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
-        if (result?.user) {
-          setUser(result.user);
-        }
-      } catch (error) {
-        console.error('Redirect result error:', error);
-      }
-    };
-
-    handleRedirectResult();
-
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
@@ -53,10 +38,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-
     try {
-      // 常にリダイレクト方式を使用（モバイル・デスクトップ両対応）
-      await signInWithRedirect(auth, provider);
+      const userCredential = await signInWithPopup(auth, provider);
+      setUser(userCredential.user);
     } catch (error) {
       console.error('Google login error:', error);
       throw error;
