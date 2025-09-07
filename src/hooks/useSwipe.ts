@@ -113,15 +113,15 @@ export const useSwipe = (handlers: SwipeHandlers, threshold: number = 50) => {
 
 // キーボードナビゲーション用フック
 export const useKeyboardNavigation = (handlers: {
-  onPrevious: () => void;
-  onNext: () => void;
+  onPrevious?: () => void;
+  onNext?: () => void;
 }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') {
+      if (e.key === 'ArrowLeft' && handlers.onPrevious) {
         e.preventDefault();
         handlers.onPrevious();
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight' && handlers.onNext) {
         e.preventDefault();
         handlers.onNext();
       }
