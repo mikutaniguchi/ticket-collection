@@ -1,20 +1,14 @@
-import {
-  ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  ExternalLink,
-  MapPin,
-  Pencil,
-  Trash2,
-} from 'lucide-react';
+import { ArrowLeft, ExternalLink, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ConfirmModal from '../components/ui/ConfirmModal';
+import TicketNavigation from '../components/ui/TicketNavigation';
 import { useAuth } from '../hooks/useAuth';
 import { useKeyboardNavigation, useSwipe } from '../hooks/useSwipe';
 import { ticketService } from '../services/ticketService';
 import type { Ticket } from '../types/ticket';
 import { isMobile } from '../utils/deviceUtils';
+import { resetPageTitle, setPageTitle } from '../utils/seo';
 import './TicketDetail.css';
 
 export default function TicketDetail() {
@@ -39,6 +33,11 @@ export default function TicketDetail() {
         const currentTicket = await ticketService.getTicket(id);
         setTicket(currentTicket);
 
+        // SEO用のタイトル設定
+        if (currentTicket) {
+          setPageTitle(currentTicket.title);
+        }
+
         // ユーザーの全チケットを取得（ナビゲーション用）
         try {
           const userTickets = await ticketService.getUserTickets(user.uid);
@@ -56,6 +55,11 @@ export default function TicketDetail() {
     };
 
     fetchData();
+
+    // クリーンアップ：コンポーネントがアンマウントされる時にタイトルをリセット
+    return () => {
+      resetPageTitle();
+    };
   }, [id, user]);
 
   const renderStars = (rating: number) => {
@@ -307,33 +311,6 @@ export default function TicketDetail() {
             <Trash2 size={20} />
           </button>
         </div>
-
-        {/* チケットナビゲーション */}
-        <div className="ticket-navigation">
-          <button
-            className="nav-button nav-previous"
-            onClick={goToPrevious}
-            disabled={isTransitioning}
-            aria-label="前のチケット"
-          >
-            <ChevronLeft size={48} />
-          </button>
-
-          <div className="nav-indicator">
-            <span className="nav-current">{currentIndex + 1}</span>
-            <span className="nav-separator">/</span>
-            <span className="nav-total">{totalTickets}</span>
-          </div>
-
-          <button
-            className="nav-button nav-next"
-            onClick={goToNext}
-            disabled={isTransitioning}
-            aria-label="次のチケット"
-          >
-            <ChevronRight size={48} />
-          </button>
-        </div>
       </div>
 
       {selectedImageIndex !== null && (
@@ -367,6 +344,15 @@ export default function TicketDetail() {
         confirmText="削除する"
         cancelText="キャンセル"
         type="danger"
+      />
+
+      {/* ナビゲーション */}
+      <TicketNavigation
+        currentIndex={currentIndex}
+        totalTickets={totalTickets}
+        onPrevious={goToPrevious}
+        onNext={goToNext}
+        isTransitioning={isTransitioning}
       />
     </div>
   );

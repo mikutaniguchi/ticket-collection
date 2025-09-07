@@ -1,0 +1,104 @@
+/* チケットナビゲーション */
+.ticket-navigation {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 500;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: none;
+  border: none;
+  color: #333333;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transform: none;
+  outline: none;
+}
+
+.nav-button svg {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+.nav-button:hover:not(:disabled) {
+  color: var(--primary-color);
+}
+
+.nav-button:active:not(:disabled) {
+  color: var(--primary-color);
+  transform: none;
+  outline: none;
+}
+
+.nav-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nav-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: var(--text-light);
+  min-width: 60px;
+  justify-content: center;
+}
+
+.nav-current {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.nav-separator {
+  color: var(--text-muted);
+}
+
+.nav-total {
+  color: var(--text-light);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .ticket-navigation {
+    bottom: 1rem;
+    gap: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+  }
+
+  .nav-button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .nav-indicator {
+    font-size: 0.9rem;
+  }
+}

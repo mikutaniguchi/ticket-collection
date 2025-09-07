@@ -1,4 +1,4 @@
-import { LogOut, Settings } from 'lucide-react';
+import { LogOut, Settings, Ticket } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
@@ -55,6 +55,9 @@ export default function Header() {
     >
       <div
         style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
           fontSize: '1.2rem',
           fontWeight: 'bold',
           color: 'var(--text-dark)',
@@ -62,6 +65,7 @@ export default function Header() {
         }}
         onClick={() => navigate('/tickets')}
       >
+        <Ticket size={24} color="var(--primary-color)" />
         Ticket Collection
       </div>
 
