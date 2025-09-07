@@ -1,17 +1,20 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import {
-  MapPin,
-  ExternalLink,
-  Pencil,
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
+  ExternalLink,
+  MapPin,
+  Pencil,
+  Trash2,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import ConfirmModal from '../components/ui/ConfirmModal';
 import { useAuth } from '../hooks/useAuth';
+import { useKeyboardNavigation, useSwipe } from '../hooks/useSwipe';
 import { ticketService } from '../services/ticketService';
-import { useSwipe, useKeyboardNavigation } from '../hooks/useSwipe';
 import type { Ticket } from '../types/ticket';
+import { isMobile } from '../utils/deviceUtils';
 import './TicketDetail.css';
 
 export default function TicketDetail() {
@@ -25,6 +28,7 @@ export default function TicketDetail() {
     null
   );
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,16 +129,39 @@ export default function TicketDetail() {
     }, 150);
   };
 
-  // スワイプとキーボード対応
+  // スワイプ対応（モバイルのみ、かつモーダル表示中は無効）
   const swipeHandlers = useSwipe({
-    onSwipeLeft: goToNext,
-    onSwipeRight: goToPrevious,
+    onSwipeLeft:
+      isMobile() && selectedImageIndex === null && !showDeleteConfirm
+        ? goToNext
+        : undefined,
+    onSwipeRight:
+      isMobile() && selectedImageIndex === null && !showDeleteConfirm
+        ? goToPrevious
+        : undefined,
   });
 
   useKeyboardNavigation({
-    onPrevious: goToPrevious,
-    onNext: goToNext,
+    onPrevious:
+      selectedImageIndex === null && !showDeleteConfirm
+        ? goToPrevious
+        : undefined,
+    onNext:
+      selectedImageIndex === null && !showDeleteConfirm ? goToNext : undefined,
   });
+
+  const handleDelete = async () => {
+    if (!id || !ticket) return;
+
+    try {
+      await ticketService.deleteTicket(id);
+      // 削除成功後、一覧に戻る
+      navigate('/tickets');
+    } catch (error) {
+      console.error('削除に失敗しました:', error);
+      alert('チケットの削除に失敗しました');
+    }
+  };
 
   const nextImage = () => {
     if (selectedImageIndex !== null && ticket) {
@@ -264,6 +291,23 @@ export default function TicketDetail() {
           </div>
         </div>
 
+        {/* 削除ボタン（右端配置） */}
+        <div
+          style={{
+            marginTop: '15rem',
+            marginBottom: '3rem',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <button
+            className="edit-button"
+            onClick={() => setShowDeleteConfirm(true)}
+          >
+            <Trash2 size={20} />
+          </button>
+        </div>
+
         {/* チケットナビゲーション */}
         <div className="ticket-navigation">
           <button
@@ -312,6 +356,18 @@ export default function TicketDetail() {
           </div>
         </div>
       )}
+
+      {/* 削除確認モーダル */}
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDelete}
+        title="チケットを削除"
+        message={`「${ticket?.title}」を本当に削除しますか？この操作は取り消せません。`}
+        confirmText="削除する"
+        cancelText="キャンセル"
+        type="danger"
+      />
     </div>
   );
 }

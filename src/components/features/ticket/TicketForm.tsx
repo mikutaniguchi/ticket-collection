@@ -148,16 +148,41 @@ export default function TicketForm({
       <div className="form-group">
         <label className="form-label required">
           <Calendar size={16} />
-          訪問日
+          訪問日時
         </label>
-        <input
-          type="date"
-          value={formData.visitDate.toISOString().split('T')[0]}
-          onChange={(e) =>
-            handleInputChange('visitDate', new Date(e.target.value))
-          }
-          className="form-input"
-        />
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <input
+            type="date"
+            value={formData.visitDate.toISOString().split('T')[0]}
+            onChange={(e) => {
+              const newDate = new Date(formData.visitDate);
+              const selectedDate = new Date(e.target.value);
+              newDate.setFullYear(selectedDate.getFullYear());
+              newDate.setMonth(selectedDate.getMonth());
+              newDate.setDate(selectedDate.getDate());
+              handleInputChange('visitDate', newDate);
+            }}
+            className="form-input"
+            style={{ flex: 2 }}
+          />
+          <select
+            value={formData.visitDate.getHours()}
+            onChange={(e) => {
+              const newDate = new Date(formData.visitDate);
+              newDate.setHours(parseInt(e.target.value));
+              newDate.setMinutes(0);
+              handleInputChange('visitDate', newDate);
+            }}
+            className="form-input"
+            style={{ flex: 1 }}
+          >
+            {Array.from({ length: 24 }, (_, i) => (
+              <option key={i} value={i}>
+                {String(i).padStart(2, '0')}時
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="form-group">

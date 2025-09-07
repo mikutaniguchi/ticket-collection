@@ -6,8 +6,6 @@
   transition:
     transform 0.1s ease-out,
     opacity 0.1s ease-out;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 .ticket-detail.transitioning {
@@ -171,10 +169,6 @@
 .review-content {
   line-height: 1.6;
   color: var(--text-dark);
-}
-
-.review-content p {
-  margin-bottom: 1rem;
 }
 
 .detail-gallery {

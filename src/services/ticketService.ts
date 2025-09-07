@@ -155,7 +155,11 @@ export const ticketService = {
 
   async deleteTicket(ticketId: string): Promise<void> {
     try {
+      // Firestoreからチケットを削除
       await deleteDoc(doc(db, COLLECTION_NAME, ticketId));
+
+      // TODO: 画像ファイルも削除する場合は以下を実装
+      // 現在は画像のfullPathを保存していないため、後で改善
     } catch (error) {
       console.error('Error deleting ticket:', error);
       throw new Error('チケットの削除に失敗しました');
@@ -206,7 +210,7 @@ export const ticketService = {
         } as Ticket);
       });
 
-      // 取得後にJavaScriptでソート
+      // 取得後にJavaScriptでソート（日時の新しい順）
       tickets.sort((a, b) => b.visitDate.getTime() - a.visitDate.getTime());
       return tickets;
     } catch (error) {
