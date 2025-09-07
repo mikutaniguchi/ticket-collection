@@ -12,7 +12,11 @@ interface Artwork {
   description: string;
 }
 
-export default function NotFound() {
+interface NotFoundProps {
+  type?: 'page' | 'ticket';
+}
+
+export default function NotFound({ type = 'page' }: NotFoundProps) {
   const navigate = useNavigate();
   const [artwork, setArtwork] = useState<Artwork | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,64 +26,90 @@ export default function NotFound() {
 
     const fetchRandomArtwork = async () => {
       try {
-        // シンプルな検索で画像付き作品を取得
-        const searchUrl = `https://api.artic.edu/api/v1/artworks?page=${Math.floor(Math.random() * 50) + 1}&limit=1&fields=id,title,artist_display,date_display,style_title,short_description,image_id,thumbnail`;
+        // 厳選アーティスト（バランス良く）
+        const artists = [
+          { search: 'Monet', display: 'モネ' },
+          { search: 'Renoir', display: 'ルノワール' },
+          { search: 'Manet', display: 'マネ' },
+          { search: 'Pissarro', display: 'ピサロ' },
+          { search: 'Cézanne', display: 'セザンヌ' },
+          { search: 'Van Gogh', display: 'ゴッホ' },
+          { search: 'Gauguin', display: 'ゴーギャン' },
+          { search: 'Berthe Morisot', display: 'ベルト・モリゾ' },
+          { search: 'Mucha', display: 'ミュシャ' },
+          { search: 'Vuillard', display: 'ヴュイヤール' },
+          { search: 'Vermeer', display: 'フェルメール' },
+          { search: 'Matisse', display: 'マティス' },
+          { search: 'Sonia Delaunay', display: 'ソニア・ドローネー' },
+          { search: 'Raoul Dufy', display: 'ラウル・デュフィ' },
+          { search: 'Joan Miró', display: 'ジョアン・ミロ' },
+          { search: 'Salvador Dalí', display: 'サルバドール・ダリ' },
+          { search: 'Pablo Picasso', display: 'パブロ・ピカソ' },
+        ];
 
-        const response = await fetch(searchUrl);
-        const data = await response.json();
+        const selectedArtist =
+          artists[Math.floor(Math.random() * artists.length)];
 
-        if (!isMounted || !data.data || data.data.length === 0) {
-          return;
+        // APIで検索
+        const searchUrl = `https://api.artic.edu/api/v1/artworks/search?q=${encodeURIComponent(selectedArtist.search)}&limit=20&fields=id`;
+        const searchResponse = await fetch(searchUrl);
+        const searchData = await searchResponse.json();
+
+        if (!searchData.data || searchData.data.length === 0) {
+          throw new Error('No artworks found');
         }
 
-        const art = data.data[0];
+        // ランダムに1つ選択
+        const randomArtwork =
+          searchData.data[Math.floor(Math.random() * searchData.data.length)];
 
-        // 画像がない場合はスキップ
-        if (!art.image_id) {
-          fetchRandomArtwork();
-          return;
-        }
+        // 詳細情報を取得
+        const detailResponse = await fetch(
+          `https://api.artic.edu/api/v1/artworks/${randomArtwork.id}`
+        );
+        const detailData = await detailResponse.json();
 
-        if (isMounted) {
+        if (isMounted && detailData.data && detailData.data.image_id) {
+          const art = detailData.data;
           setArtwork({
             title: art.title || '無題',
-            artist: art.artist_display || '作者不明',
+            artist: art.artist_display || selectedArtist.display,
             imageUrl: `https://www.artic.edu/iiif/2/${art.image_id}/full/843,/0/default.jpg`,
             date: art.date_display || '',
             style: art.style_title || '',
-            description: art.short_description || art.thumbnail?.alt_text || '',
+            description:
+              art.short_description ||
+              art.thumbnail?.alt_text ||
+              `${selectedArtist.display}の作品`,
           });
-        }
-      } catch (err) {
-        console.error('Artwork fetch error:', err);
-        // エラー時は元の固定リストにフォールバック
-        const fallbackIds = [27992, 20684, 16568];
-        const randomId =
-          fallbackIds[Math.floor(Math.random() * fallbackIds.length)];
+        } else {
+          // フォールバック：確実な名作
+          const fallbackIds = [27992, 20684, 16568]; // 北斎、モネ、ゴッホ
+          const fallbackId =
+            fallbackIds[Math.floor(Math.random() * fallbackIds.length)];
 
-        try {
           const fallbackResponse = await fetch(
-            `https://api.artic.edu/api/v1/artworks/${randomId}`
+            `https://api.artic.edu/api/v1/artworks/${fallbackId}`
           );
           const fallbackData = await fallbackResponse.json();
 
-          if (isMounted && fallbackData.data) {
+          if (isMounted && fallbackData.data && fallbackData.data.image_id) {
             const art = fallbackData.data;
             setArtwork({
               title: art.title || '無題',
               artist: art.artist_display || '作者不明',
-              imageUrl: art.image_id
-                ? `https://www.artic.edu/iiif/2/${art.image_id}/full/843,/0/default.jpg`
-                : '',
+              imageUrl: `https://www.artic.edu/iiif/2/${art.image_id}/full/843,/0/default.jpg`,
               date: art.date_display || '',
-              style: art.style_title || '',
+              style: art.style_title || '名作',
               description:
-                art.short_description || art.thumbnail?.alt_text || '',
+                art.short_description ||
+                art.thumbnail?.alt_text ||
+                '世界的名作',
             });
           }
-        } catch (fallbackErr) {
-          console.error('Fallback fetch error:', fallbackErr);
         }
+      } catch (err) {
+        console.error('Artwork fetch error:', err);
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -98,9 +128,15 @@ export default function NotFound() {
     <div className="not-found">
       <div className="not-found-content">
         <h1 className="not-found-code">404</h1>
-        <h2 className="not-found-title">ページが見つかりません</h2>
+        <h2 className="not-found-title">
+          {type === 'ticket'
+            ? 'チケットが見つかりません'
+            : 'ページが見つかりません'}
+        </h2>
         <p className="not-found-message">
-          お探しのページは存在しないか、移動した可能性があります。
+          {type === 'ticket'
+            ? 'お探しのチケットは存在しないか、削除された可能性があります。'
+            : 'お探しのページは存在しないか、移動した可能性があります。'}
         </p>
 
         <div className="not-found-actions">

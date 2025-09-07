@@ -10,6 +10,7 @@ import type { Ticket } from '../types/ticket';
 import { isMobile } from '../utils/deviceUtils';
 import { renderMarkdown } from '../utils/markdown';
 import { resetPageTitle, setPageTitle } from '../utils/seo';
+import NotFound from './NotFound';
 import './TicketDetail.css';
 
 export default function TicketDetail() {
@@ -228,12 +229,7 @@ export default function TicketDetail() {
   }
 
   if (!ticket) {
-    return (
-      <div className="ticket-detail-error">
-        <p>チケットが見つかりません</p>
-        <button onClick={() => navigate('/tickets')}>一覧に戻る</button>
-      </div>
-    );
+    return <NotFound type="ticket" />;
   }
 
   const allImages = [ticket.ticketImage, ...ticket.gallery];
