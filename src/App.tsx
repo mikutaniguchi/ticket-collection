@@ -4,7 +4,6 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
-import { useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import Login from './pages/Login';
@@ -64,33 +63,6 @@ function AppRoutes() {
 }
 
 function App() {
-  useEffect(() => {
-    // iPhone Safari のオーバースクロール（バウンス）防止
-    const preventBounce = (e: TouchEvent) => {
-      // ページ全体がスクロール範囲を超えた場合のタッチを防止
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const windowHeight = window.innerHeight;
-
-      if (scrollTop === 0 || scrollTop + windowHeight >= scrollHeight) {
-        e.preventDefault();
-      }
-    };
-
-    // iOSデバイスの場合のみ適用
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    if (isIOS) {
-      document.addEventListener('touchmove', preventBounce, { passive: false });
-    }
-
-    return () => {
-      if (isIOS) {
-        document.removeEventListener('touchmove', preventBounce);
-      }
-    };
-  }, []);
-
   return (
     <Router>
       <AuthProvider>
