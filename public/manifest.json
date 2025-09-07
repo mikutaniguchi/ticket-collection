@@ -1,0 +1,19 @@
+{
+  "name": "Ticket Collection",
+  "short_name": "Tickets",
+  "description": "美術館・博物館のチケットコレクション管理アプリ",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#287475",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/ticket.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["lifestyle", "entertainment"],
+  "lang": "ja"
+}
