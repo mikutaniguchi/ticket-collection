@@ -9,7 +9,7 @@
   background-clip: padding-box;
 }
 
-@media (max-width: 500px) {
+@media (width <= 480px) {
   .ticket-grid {
     margin-left: -0.5rem;
   }

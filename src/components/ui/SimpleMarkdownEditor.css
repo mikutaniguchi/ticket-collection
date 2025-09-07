@@ -1,0 +1,77 @@
+.markdown-editor {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+}
+
+.markdown-editor-toolbar {
+  display: flex;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--background-light);
+}
+
+.toolbar-button {
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  transition: all 0.2s;
+  border-right: 1px solid var(--border-light);
+}
+
+.toolbar-button:last-child {
+  border-right: none;
+}
+
+.toolbar-button.active {
+  background: white;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.toolbar-button:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.markdown-textarea {
+  width: 100%;
+  min-height: 12em;
+  padding: 1rem;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-dark);
+  field-sizing: content;
+}
+
+.markdown-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.markdown-preview {
+  min-height: 12em;
+  padding: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-dark);
+}
+
+.markdown-preview a {
+  color: var(--primary-color);
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.markdown-preview a:hover {
+  color: var(--primary-hover);
+}
+
+.markdown-preview br + br {
+  margin: 0.5rem 0;
+}

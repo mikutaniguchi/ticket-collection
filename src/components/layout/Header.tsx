@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import AccountSettingsModal from '../features/account/AccountSettingsModal';
+import './Header.css';
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -45,100 +46,23 @@ export default function Header() {
   }, [showDropdown]);
 
   return (
-    <header
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '0.5rem 2rem',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          fontSize: '1.2rem',
-          fontWeight: 'bold',
-          color: 'var(--text-dark)',
-          cursor: 'pointer',
-        }}
-        onClick={() => navigate('/tickets')}
-      >
+    <header className="header">
+      <div className="header-logo" onClick={() => navigate('/tickets')}>
         <Ticket size={24} color="var(--primary-color)" />
         Ticket Collection
       </div>
 
       <div ref={dropdownRef} style={{ position: 'relative' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            padding: '0.5rem',
-            transition: 'opacity 0.2s',
-            color: 'var(--text-dark)',
-            fontSize: '0.9rem',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.opacity = '0.8';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.opacity = '1';
-          }}
-          onClick={toggleDropdown}
-        >
+        <div className="account-button" onClick={toggleDropdown}>
           {user?.displayName || user?.email?.split('@')[0] || 'ユーザー'}
         </div>
 
         {showDropdown && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '100%',
-              right: 0,
-              marginTop: '0.5rem',
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              zIndex: 1000,
-              border: '1px solid var(--border-light)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <div
-              style={{
-                padding: '0.75rem 1rem',
-                borderBottom: '1px solid var(--border-light)',
-                fontSize: '0.9rem',
-                color: 'var(--text-light)',
-              }}
-            >
-              {user?.email}
-            </div>
+          <div className="dropdown-menu">
+            <div className="dropdown-email">{user?.email}</div>
 
             <button
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                border: 'none',
-                background: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                color: 'var(--text-dark)',
-                borderBottom: '1px solid var(--border-light)',
-                transition: 'background-color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'var(--background-light)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }}
+              className="dropdown-button dropdown-button-settings"
               onClick={() => {
                 setShowSettingsModal(true);
                 setShowDropdown(false);
@@ -148,29 +72,7 @@ export default function Header() {
               設定
             </button>
 
-            <button
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                border: 'none',
-                background: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                color: 'var(--text-dark)',
-                transition: 'background-color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'var(--background-light)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }}
-              onClick={handleLogout}
-            >
+            <button className="dropdown-button" onClick={handleLogout}>
               <LogOut size={16} />
               ログアウト
             </button>

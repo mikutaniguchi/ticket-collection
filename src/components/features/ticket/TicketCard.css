@@ -114,7 +114,7 @@
 }
 
 /* モバイル対応 */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .ticket-card {
     animation-delay: calc(var(--stagger-index, 0) * 50ms);
   }

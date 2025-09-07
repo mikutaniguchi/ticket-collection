@@ -33,7 +33,9 @@
   border: 1px solid var(--border-light);
   border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   background: var(--background-white);
   color: var(--text-dark);
 }
@@ -54,7 +56,9 @@
   border: 1px solid var(--border-light);
   border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
   background: var(--background-white);
   color: var(--text-dark);
   resize: vertical;
@@ -97,7 +101,9 @@
   border: 2px dashed var(--border-light);
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
   background: var(--background-light);
 }
 
@@ -120,6 +126,11 @@
   object-fit: contain;
   border-radius: 8px;
   height: 200px;
+  transition: opacity 0.2s;
+}
+
+.image-preview:hover {
+  opacity: 0.8;
 }
 
 /* 星評価 */
@@ -163,7 +174,9 @@
   border: 1px dashed var(--border-light);
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
   background: var(--background-light);
   color: var(--text-light);
 }
@@ -306,21 +319,20 @@
 }
 
 /* レスポンシブ対応 */
-@media (max-width: 768px) {
+@media (width <= 768px) {
   .ticket-form {
-    margin: 1rem;
-    padding: 1.5rem;
+    padding: 1rem;
   }
-  
+
   .form-actions {
     flex-direction: column-reverse;
   }
-  
+
   .cancel-button,
   .submit-button {
     width: 100%;
   }
-  
+
   .gallery-previews {
     grid-template-columns: repeat(4, 1fr);
   }

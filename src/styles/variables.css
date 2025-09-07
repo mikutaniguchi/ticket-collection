@@ -1,0 +1,16 @@
+/* 統一ブレークポイントコメント（統一ルール） */
+/* --small: 480px */
+/* --mobile: 768px */  
+/* --tablet-up: 769px */
+/* --desktop: 1024px */
+
+:root {
+  /* カラー変数 */
+  --primary-color: #287475;
+  --primary-hover: #1e5a5b;
+  --text-dark: #1a1a1a;
+  --text-light: #666666;
+  --text-muted: #999999;
+  --border-light: #e5e7eb;
+  --background-light: #f8f9fa;
+}

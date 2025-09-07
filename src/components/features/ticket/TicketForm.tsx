@@ -1,6 +1,7 @@
 import { Calendar, Image, Star, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { TicketFormData } from '../../../types/ticket';
+import SimpleMarkdownEditor from '../../ui/SimpleMarkdownEditor';
 import './TicketForm.css';
 
 interface TicketFormProps {
@@ -229,12 +230,10 @@ export default function TicketForm({
 
       <div className="form-group">
         <label className="form-label">感想</label>
-        <textarea
+        <SimpleMarkdownEditor
           value={formData.review}
-          onChange={(e) => handleInputChange('review', e.target.value)}
-          className="form-textarea"
-          placeholder="感想を書いてください"
-          rows={4}
+          onChange={(value) => handleInputChange('review', value)}
+          placeholder="感想を書いてください... (URLや箇条書き「- 」が使えます)"
         />
       </div>
 
@@ -253,11 +252,14 @@ export default function TicketForm({
           />
 
           {ticketImagePreview ? (
-            <img
-              src={ticketImagePreview}
-              alt="チケット画像"
-              className="image-preview"
-            />
+            <label htmlFor="ticket-image" style={{ cursor: 'pointer' }}>
+              <img
+                src={ticketImagePreview}
+                alt="チケット画像"
+                className="image-preview"
+                title="クリックして画像を変更"
+              />
+            </label>
           ) : (
             <label htmlFor="ticket-image" className="image-upload-button">
               <div className="upload-placeholder">

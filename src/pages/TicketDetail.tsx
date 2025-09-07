@@ -8,6 +8,7 @@ import { useKeyboardNavigation, useSwipe } from '../hooks/useSwipe';
 import { ticketService } from '../services/ticketService';
 import type { Ticket } from '../types/ticket';
 import { isMobile } from '../utils/deviceUtils';
+import { renderMarkdown } from '../utils/markdown';
 import { resetPageTitle, setPageTitle } from '../utils/seo';
 import './TicketDetail.css';
 
@@ -269,11 +270,12 @@ export default function TicketDetail() {
         {ticket.review && (
           <div className="detail-review">
             <h3>感想</h3>
-            <div className="review-content">
-              {ticket.review.split('\n').map((line, index) => (
-                <p key={index}>{line}</p>
-              ))}
-            </div>
+            <div
+              className="review-content markdown-content"
+              dangerouslySetInnerHTML={{
+                __html: renderMarkdown(ticket.review),
+              }}
+            />
           </div>
         )}
 
@@ -346,14 +348,16 @@ export default function TicketDetail() {
         type="danger"
       />
 
-      {/* ナビゲーション */}
-      <TicketNavigation
-        currentIndex={currentIndex}
-        totalTickets={totalTickets}
-        onPrevious={goToPrevious}
-        onNext={goToNext}
-        isTransitioning={isTransitioning}
-      />
+      {/* ナビゲーション（2枚以上の時のみ表示） */}
+      {totalTickets >= 2 && (
+        <TicketNavigation
+          currentIndex={currentIndex}
+          totalTickets={totalTickets}
+          onPrevious={goToPrevious}
+          onNext={goToNext}
+          isTransitioning={isTransitioning}
+        />
+      )}
     </div>
   );
 }
