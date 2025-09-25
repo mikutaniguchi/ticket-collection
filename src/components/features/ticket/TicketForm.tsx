@@ -88,19 +88,31 @@ export default function TicketForm({
 
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    const newGallery = [...(formData.gallery as File[]), ...files].slice(0, 5);
-    handleInputChange('gallery', newGallery);
 
-    // プレビュー更新
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setGalleryPreviews((prev) =>
-          [...prev, reader.result as string].slice(0, 5)
-        );
-      };
-      reader.readAsDataURL(file);
-    });
+    // 現在のギャラリーと新しいファイルを結合（最大5枚まで）
+    const currentGallery = formData.gallery as File[];
+    const remainingSlots = 5 - currentGallery.length;
+    const filesToAdd = files.slice(0, remainingSlots);
+
+    if (filesToAdd.length > 0) {
+      // すべてのファイルを一度に追加
+      const newGallery = [...currentGallery, ...filesToAdd];
+      handleInputChange('gallery', newGallery);
+
+      // プレビュー更新
+      filesToAdd.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setGalleryPreviews((prev) =>
+            [...prev, reader.result as string].slice(0, 5)
+          );
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // inputをリセットして同じファイルも再選択可能にする
+    e.target.value = '';
   };
 
   const removeGalleryImage = (index: number) => {
@@ -291,7 +303,7 @@ export default function TicketForm({
             className={`gallery-upload-button ${(formData.gallery?.length || 0) >= 5 ? 'disabled' : ''}`}
           >
             <Image size={24} />
-            <span>画像を追加</span>
+            <span>画像を追加 ({formData.gallery?.length || 0}/5)</span>
           </label>
         </div>
 
