@@ -4,6 +4,9 @@ import type { TicketFormData } from '../../../types/ticket';
 import SimpleMarkdownEditor from '../../ui/SimpleMarkdownEditor';
 import './TicketForm.css';
 
+// ギャラリー画像の最大枚数
+const MAX_GALLERY_IMAGES = 7;
+
 interface TicketFormProps {
   initialData?: Partial<TicketFormData>;
   onSubmit: (data: TicketFormData) => Promise<void>;
@@ -46,7 +49,7 @@ export default function TicketForm({
       if (initialData.gallery && Array.isArray(initialData.gallery)) {
         const previews = initialData.gallery
           .filter((img): img is string => typeof img === 'string')
-          .slice(0, 5);
+          .slice(0, MAX_GALLERY_IMAGES);
         setGalleryPreviews(previews);
       }
     }
@@ -89,10 +92,13 @@ export default function TicketForm({
   const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
-    // 現在のギャラリーと新しいファイルを結合（最大5枚まで）
+    // 撮影日時の古い順に並び替え（lastModifiedを使用）
+    const sortedFiles = files.sort((a, b) => a.lastModified - b.lastModified);
+
+    // 現在のギャラリーと新しいファイルを結合（最大枚数まで）
     const currentGallery = formData.gallery as File[];
-    const remainingSlots = 5 - currentGallery.length;
-    const filesToAdd = files.slice(0, remainingSlots);
+    const remainingSlots = MAX_GALLERY_IMAGES - currentGallery.length;
+    const filesToAdd = sortedFiles.slice(0, remainingSlots);
 
     if (filesToAdd.length > 0) {
       // すべてのファイルを一度に追加
@@ -104,7 +110,7 @@ export default function TicketForm({
         const reader = new FileReader();
         reader.onload = () => {
           setGalleryPreviews((prev) =>
-            [...prev, reader.result as string].slice(0, 5)
+            [...prev, reader.result as string].slice(0, MAX_GALLERY_IMAGES)
           );
         };
         reader.readAsDataURL(file);
@@ -287,7 +293,9 @@ export default function TicketForm({
       </div>
 
       <div className="form-group">
-        <label className="form-label">ギャラリー画像（最大5枚）</label>
+        <label className="form-label">
+          ギャラリー画像（最大{MAX_GALLERY_IMAGES}枚）
+        </label>
         <div className="gallery-upload">
           <input
             type="file"
@@ -296,14 +304,16 @@ export default function TicketForm({
             onChange={handleGalleryChange}
             className="image-input"
             id="gallery-images"
-            disabled={(formData.gallery?.length || 0) >= 5}
+            disabled={(formData.gallery?.length || 0) >= MAX_GALLERY_IMAGES}
           />
           <label
             htmlFor="gallery-images"
-            className={`gallery-upload-button ${(formData.gallery?.length || 0) >= 5 ? 'disabled' : ''}`}
+            className={`gallery-upload-button ${(formData.gallery?.length || 0) >= MAX_GALLERY_IMAGES ? 'disabled' : ''}`}
           >
             <Image size={24} />
-            <span>画像を追加 ({formData.gallery?.length || 0}/5)</span>
+            <span>
+              画像を追加 ({formData.gallery?.length || 0}/{MAX_GALLERY_IMAGES})
+            </span>
           </label>
         </div>
 
