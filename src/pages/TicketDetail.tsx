@@ -64,6 +64,7 @@ export default function TicketDetail() {
     // クリーンアップ：コンポーネントがアンマウントされる時にタイトルをリセット
     return () => {
       resetPageTitle();
+      document.body.classList.remove('modal-open'); // クラスも確実に削除
     };
   }, [id, user]);
 
@@ -96,11 +97,13 @@ export default function TicketDetail() {
   const openImageModal = (index: number) => {
     setSelectedImageIndex(index);
     setDisplayIndex(index + 1); // クローンを考慮して+1
+    document.body.classList.add('modal-open'); // クラス追加
   };
 
   const closeImageModal = () => {
     setSelectedImageIndex(null);
     setDisplayIndex(0);
+    document.body.classList.remove('modal-open'); // クラス削除
   };
 
   // ナビゲーション機能
@@ -248,11 +251,13 @@ export default function TicketDetail() {
 
     try {
       await ticketService.deleteTicket(id);
+      document.body.classList.remove('modal-open'); // クラス削除
       // 削除成功後、一覧に戻る
       navigate('/tickets');
     } catch (error) {
       console.error('削除に失敗しました:', error);
       alert('チケットの削除に失敗しました');
+      document.body.classList.remove('modal-open'); // エラー時もクラス削除
     }
   };
 
@@ -381,7 +386,10 @@ export default function TicketDetail() {
         >
           <button
             className="edit-button"
-            onClick={() => setShowDeleteConfirm(true)}
+            onClick={() => {
+              setShowDeleteConfirm(true);
+              document.body.classList.add('modal-open');
+            }}
           >
             <Trash2 size={20} />
           </button>
@@ -448,7 +456,10 @@ export default function TicketDetail() {
       {/* 削除確認モーダル */}
       <ConfirmModal
         isOpen={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
+        onClose={() => {
+          setShowDeleteConfirm(false);
+          document.body.classList.remove('modal-open');
+        }}
         onConfirm={handleDelete}
         title="チケットを削除"
         message={`「${ticket?.title}」を本当に削除しますか？この操作は取り消せません。`}
