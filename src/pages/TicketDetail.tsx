@@ -27,6 +27,7 @@ export default function TicketDetail() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwipeAnimating, setIsSwipeAnimating] = useState(false);
+  const [displayIndex, setDisplayIndex] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,10 +95,12 @@ export default function TicketDetail() {
 
   const openImageModal = (index: number) => {
     setSelectedImageIndex(index);
+    setDisplayIndex(index + 1); // クローンを考慮して+1
   };
 
   const closeImageModal = () => {
     setSelectedImageIndex(null);
+    setDisplayIndex(0);
   };
 
   // ナビゲーション機能
@@ -140,26 +143,48 @@ export default function TicketDetail() {
   const nextImage = () => {
     if (selectedImageIndex !== null && ticket && !isSwipeAnimating) {
       setIsSwipeAnimating(true);
+      setSwipeOffset(0); // 即座にオフセットをリセット
       const totalImages = 1 + ticket.gallery.length;
-      setSelectedImageIndex((selectedImageIndex + 1) % totalImages);
-      setTimeout(() => {
-        setIsSwipeAnimating(false);
-        setSwipeOffset(0);
-      }, 300);
+      const nextIndex = (selectedImageIndex + 1) % totalImages;
+
+      setDisplayIndex(displayIndex + 1);
+      setSelectedImageIndex(nextIndex);
+
+      // 最後から最初に戻る時の処理
+      if (selectedImageIndex === totalImages - 1) {
+        setTimeout(() => {
+          setIsSwipeAnimating(false);
+          setDisplayIndex(1); // 最初のクローンにリセット
+        }, 300);
+      } else {
+        setTimeout(() => {
+          setIsSwipeAnimating(false);
+        }, 300);
+      }
     }
   };
 
   const prevImage = () => {
     if (selectedImageIndex !== null && ticket && !isSwipeAnimating) {
       setIsSwipeAnimating(true);
+      setSwipeOffset(0); // 即座にオフセットをリセット
       const totalImages = 1 + ticket.gallery.length;
-      setSelectedImageIndex(
-        (selectedImageIndex - 1 + totalImages) % totalImages
-      );
-      setTimeout(() => {
-        setIsSwipeAnimating(false);
-        setSwipeOffset(0);
-      }, 300);
+      const prevIndex = (selectedImageIndex - 1 + totalImages) % totalImages;
+
+      setDisplayIndex(displayIndex - 1);
+      setSelectedImageIndex(prevIndex);
+
+      // 最初から最後に戻る時の処理
+      if (selectedImageIndex === 0) {
+        setTimeout(() => {
+          setIsSwipeAnimating(false);
+          setDisplayIndex(totalImages); // 最後のクローンにリセット
+        }, 300);
+      } else {
+        setTimeout(() => {
+          setIsSwipeAnimating(false);
+        }, 300);
+      }
     }
   };
 
@@ -172,29 +197,40 @@ export default function TicketDetail() {
     },
     onSwipeMove: (deltaX: number) => {
       if (selectedImageIndex !== null && !isSwipeAnimating) {
-        setSwipeOffset(deltaX);
+        // スワイプ量を制限（画面幅の40%まで）
+        const maxSwipe = window.innerWidth * 0.4;
+        const limitedDelta = Math.max(-maxSwipe, Math.min(maxSwipe, deltaX));
+        setSwipeOffset(limitedDelta);
       }
     },
     onSwipeEnd: () => {
       if (selectedImageIndex !== null && !isSwipeAnimating) {
-        setIsSwipeAnimating(true);
-        setTimeout(() => {
-          setSwipeOffset(0);
-          setIsSwipeAnimating(false);
-        }, 200);
+        const threshold = window.innerWidth * 0.15; // 画面幅の15%以上スワイプで切り替え
+
+        if (Math.abs(swipeOffset) > threshold) {
+          // 閾値を超えたら画像を切り替え
+          if (swipeOffset > 0) {
+            prevImage();
+          } else {
+            nextImage();
+          }
+        } else {
+          // 閾値未満なら元に戻す
+          setIsSwipeAnimating(true);
+          setTimeout(() => {
+            setSwipeOffset(0);
+            setIsSwipeAnimating(false);
+          }, 200);
+        }
       }
     },
     onSwipeLeft:
-      isMobile() && !showDeleteConfirm
-        ? selectedImageIndex !== null
-          ? nextImage
-          : goToNext
+      isMobile() && !showDeleteConfirm && selectedImageIndex === null
+        ? goToNext
         : undefined,
     onSwipeRight:
-      isMobile() && !showDeleteConfirm
-        ? selectedImageIndex !== null
-          ? prevImage
-          : goToPrevious
+      isMobile() && !showDeleteConfirm && selectedImageIndex === null
+        ? goToPrevious
         : undefined,
   });
 
@@ -233,6 +269,12 @@ export default function TicketDetail() {
   }
 
   const allImages = [ticket.ticketImage, ...ticket.gallery];
+  // 無限ループ用: 最後に最初の画像、最初に最後の画像をクローンとして追加
+  const loopImages = [
+    allImages[allImages.length - 1], // 最後の画像のクローン
+    ...allImages,
+    allImages[0], // 最初の画像のクローン
+  ];
   const currentIndex = allTickets.findIndex((t) => t.id === id);
   const totalTickets = allTickets.length;
 
@@ -360,17 +402,25 @@ export default function TicketDetail() {
               ‹
             </button>
             <div className="modal-image-container">
-              <img
-                src={allImages[selectedImageIndex]}
-                alt={`画像 ${selectedImageIndex + 1}`}
-                className="modal-image"
+              <div
+                className="modal-images-wrapper"
                 style={{
-                  transform: `translateX(${swipeOffset}px)`,
+                  transform: `translateX(calc(-${displayIndex * 100}% + ${swipeOffset}px))`,
                   transition: isSwipeAnimating
-                    ? 'transform 0.3s ease-out'
+                    ? 'transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1)'
                     : 'none',
                 }}
-              />
+              >
+                {loopImages.map((imageUrl, index) => (
+                  <div key={index} className="modal-image-slide">
+                    <img
+                      src={imageUrl}
+                      alt={`画像 ${index}`}
+                      className="modal-image"
+                    />
+                  </div>
+                ))}
+              </div>
               <div
                 className="modal-touch-area modal-touch-left"
                 onClick={prevImage}
