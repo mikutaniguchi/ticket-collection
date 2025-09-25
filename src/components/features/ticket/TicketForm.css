@@ -40,6 +40,14 @@
   color: var(--text-dark);
 }
 
+/* iOS Safari自動ズーム防止 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .form-input,
+  .form-textarea {
+    font-size: 16px !important;
+  }
+}
+
 .form-input:focus {
   outline: none;
   border-color: var(--primary-color);

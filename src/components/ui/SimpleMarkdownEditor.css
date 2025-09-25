@@ -54,6 +54,13 @@
   color: var(--text-muted);
 }
 
+/* iOS Safari自動ズーム防止 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .markdown-textarea {
+    font-size: 16px !important;
+  }
+}
+
 .markdown-preview {
   min-height: 12em;
   padding: 1rem;
