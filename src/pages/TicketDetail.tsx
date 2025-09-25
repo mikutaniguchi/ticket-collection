@@ -65,6 +65,15 @@ export default function TicketDetail() {
     return () => {
       resetPageTitle();
       document.body.classList.remove('modal-open'); // クラスも確実に削除
+
+      // viewportも元に戻す
+      const viewport = document.querySelector('meta[name="viewport"]');
+      if (viewport) {
+        viewport.setAttribute(
+          'content',
+          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+        );
+      }
     };
   }, [id, user]);
 
@@ -98,12 +107,30 @@ export default function TicketDetail() {
     setSelectedImageIndex(index);
     setDisplayIndex(index + 1); // クローンを考慮して+1
     document.body.classList.add('modal-open'); // クラス追加
+
+    // モーダル表示時はピンチズーム有効化
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute(
+        'content',
+        'width=device-width, initial-scale=1.0, viewport-fit=cover'
+      );
+    }
   };
 
   const closeImageModal = () => {
     setSelectedImageIndex(null);
     setDisplayIndex(0);
     document.body.classList.remove('modal-open'); // クラス削除
+
+    // モーダル閉じる時はズーム無効化に戻す
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute(
+        'content',
+        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'
+      );
+    }
   };
 
   // ナビゲーション機能
