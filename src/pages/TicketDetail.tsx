@@ -456,22 +456,18 @@ export default function TicketDetail() {
                   </div>
                 ))}
               </div>
-              <div
-                className="modal-touch-area modal-touch-left"
-                onClick={prevImage}
-                onTouchEnd={(e) => {
-                  e.stopPropagation();
-                  prevImage();
-                }}
-              ></div>
-              <div
-                className="modal-touch-area modal-touch-right"
-                onClick={nextImage}
-                onTouchEnd={(e) => {
-                  e.stopPropagation();
-                  nextImage();
-                }}
-              ></div>
+              {!isMobile() && (
+                <>
+                  <div
+                    className="modal-touch-area modal-touch-left"
+                    onClick={prevImage}
+                  ></div>
+                  <div
+                    className="modal-touch-area modal-touch-right"
+                    onClick={nextImage}
+                  ></div>
+                </>
+              )}
             </div>
             <button className="modal-next" onClick={nextImage}>
               ›
