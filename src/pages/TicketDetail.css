@@ -254,7 +254,7 @@ body.modal-open {
   max-height: 90vh;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: pan-y;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 
 .modal-image-container {
@@ -291,7 +291,8 @@ body.modal-open {
   border-radius: 4px;
   user-select: none;
   -webkit-user-select: none;
-  pointer-events: none;
+  pointer-events: auto;
+  touch-action: pinch-zoom;
 }
 
 /* PC版のサイズ調整 */
